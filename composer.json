@@ -1,0 +1,24 @@
+{
+    "name": "msggo/sdk-php",
+    "description": "PHP SDK for interacting with the MsgGO API.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Your Name / Company",
+            "email": "email@example.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "MsgGo\\Client\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
