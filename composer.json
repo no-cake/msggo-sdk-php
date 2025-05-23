@@ -1,12 +1,12 @@
 {
-    "name": "msggo/sdk-php",
+    "name": "nocake/msggo",
     "description": "PHP SDK for interacting with the MsgGO API.",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Your Name / Company",
-            "email": "email@example.com"
+            "name": "NoCkae",
+            "email": "support@nocake.io"
         }
     ],
     "require": {

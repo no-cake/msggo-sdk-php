@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MsgGo\Client;
+namespace MsgGo;
 
 use MsgGo\Client\Exception\ApiException;
 
@@ -41,24 +41,13 @@ class Client
     /**
      * Sends an event to MsgGO.
      *
-     * @param string $eventName The name of the event.
-     * @param array<string, mixed> $data Additional data for the event.
+     * @param array<string, mixed> $data Event data.
      * @return array{ok: bool, statusCode: int, message?: string, data?: array<mixed>} The API response if successful.
      * @throws \RuntimeException If the cURL request fails or the response cannot be decoded.
      * @throws ApiException If the API returns an error (e.g., authentication failure, validation error).
      */
-    public function sendEvent(string $eventName, array $data = []): array
+    public function event(array $data = []): bool
     {
-        if (empty($eventName)) {
-            throw new \InvalidArgumentException('Event name cannot be empty.');
-        }
-
-        $payload = array_merge(['event_name' => $eventName], $data);
-        // The documentation mentions __key in the body as one of the ways to send the key,
-        // but also X-MsgGO-Key header. The header is generally preferred for API keys.
-        // The problem description states: "The API key will be sent using the X-MsgGO-Key header."
-        // So, we will not add __key to the payload.
-
         $url = rtrim($this->apiBaseUrl, '/') . self::ENDPOINT_INBOX;
 
         $ch = $this->getCurlHandle();
@@ -67,7 +56,7 @@ class Client
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
-            'Accept: application/json', // To get JSON error responses as per documentation
+            'Accept: application/json', 
             'X-MsgGO-Key: ' . $this->apiKey,
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -99,28 +88,20 @@ class Client
             throw new \RuntimeException('Failed to decode JSON response: ' . json_last_error_msg());
         }
         
-        // As per documentation, error responses include "ok: false" and "statusCode"
-        // Successful responses might not explicitly include "ok: true", but a 200 status is a good sign.
-        // The example successful response is just a blank page with 200 status if Accept header is not application/json
-        // With Accept: application/json, we expect a JSON response.
-        // Let's ensure the structure is somewhat consistent or provide a default.
         if (!isset($decodedResponse['ok'])) {
-            $decodedResponse['ok'] = ($httpStatusCode >= 200 && $httpStatusCode < 300);
-        }
-        if (!isset($decodedResponse['statusCode'])) {
-            $decodedResponse['statusCode'] = $httpStatusCode;
+            throw new ApiException('Malformed respnose.', 0, 'malformed_response');
         }
 
         // Throw ApiException if the API call was not successful
-        if ($decodedResponse['ok'] === false || $decodedResponse['statusCode'] >= 400) {
+        if ($decodedResponse['ok'] === false) {
             throw new ApiException(
-                $decodedResponse['message'] ?? 'API request failed with status code ' . $decodedResponse['statusCode'],
-                $decodedResponse['statusCode'],
-                $decodedResponse
+                $decodedResponse['errors'][0]['message'],
+                $httpStatusCode,
+                $decodedResponse['errors'][0]['error']
             );
         }
 
-        return $decodedResponse;
+        return true;
     }
 
     /**
