@@ -48,7 +48,7 @@ try {
     ];
 
     // Send an event
-    $client->event($eventName, $eventData);
+    $client->event($eventData);
 
 } catch (\InvalidArgumentException $e) {
     // Handle errors related to invalid arguments (e.g., empty API key)
