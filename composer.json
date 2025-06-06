@@ -5,18 +5,18 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "NoCkae",
+            "name": "NoCake",
             "email": "support@nocake.io"
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.0",
         "ext-curl": "*",
         "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
-            "MsgGo\\Client\\": "src/"
+            "NoCake\\MsgGo\\": "src/"
         }
     },
     "minimum-stability": "stable",

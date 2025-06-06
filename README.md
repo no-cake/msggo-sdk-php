@@ -6,7 +6,7 @@ The SDK is compliant with PSR standards.
 
 ## Requirements
 
-- PHP 7.4 or higher
+- PHP 8.0 or higher
 - cURL extension
 - JSON extension
 
@@ -27,8 +27,8 @@ First, you need to obtain an API key from your MsgGO dashboard.
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use MsgGo\Client;
-use MsgGo\Client\Exception\ApiException;
+use NoCake\MsgGo\Client;
+use NoCake\MsgGo\Client\Exception\ApiException;
 
 // Replace 'YOUR_MSGGO_API_KEY' with your actual API key
 $apiKey = 'YOUR_MSGGO_API_KEY';
